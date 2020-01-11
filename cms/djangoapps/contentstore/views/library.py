@@ -13,14 +13,15 @@ from django.core.exceptions import PermissionDenied
 from django.http import Http404, HttpResponseForbidden, HttpResponseNotAllowed
 from django.utils.translation import ugettext as _
 from django.views.decorators.csrf import ensure_csrf_cookie
-from django.views.decorators.http import require_http_methods
+from django.views.decorators.http import require_GET, require_http_methods
 from opaque_keys import InvalidKeyError
-from opaque_keys.edx.keys import CourseKey
+from opaque_keys.edx.keys import CourseKey, UsageKey
 from opaque_keys.edx.locator import LibraryLocator, LibraryUsageLocator
 from six import text_type
 
 from contentstore.utils import add_instructor, reverse_library_url
 from contentstore.views.item import create_xblock_info
+from contentstore.views.helpers import get_parent_xblock
 from course_creators.views import get_course_creator_status
 from edxmako.shortcuts import render_to_response
 from student.auth import (
@@ -39,7 +40,7 @@ from xmodule.modulestore.exceptions import DuplicateCourseError
 from .component import CONTAINER_TEMPLATES, get_component_templates
 from .user import user_with_role
 
-__all__ = ['library_handler', 'manage_library_users']
+__all__ = ['library_handler', 'library_container_handler', 'manage_library_users']
 
 log = logging.getLogger(__name__)
 
@@ -265,3 +266,54 @@ def manage_library_users(request, library_key_string):
         'lib_users_url': reverse_library_url('manage_library_users', library_key_string),
         'show_children_previews': library.show_children_previews
     })
+
+@require_GET
+@login_required
+def library_container_handler(request, library_key_string, usage_key_string):
+    """
+    Handler for library container xblock requests.
+
+    GET
+        html: returns the HTML page for editing a container
+        json: not currently supported
+
+    """
+    if 'text/html' not in request.META.get('HTTP_ACCEPT', 'text/html'):
+        return HttpResponseBadRequest("Only supports HTML requests")
+
+    library_key = CourseKey.from_string(library_key_string)
+    library = modulestore().get_library(library_key)
+    if library is None:
+        log.exception(u"Library %s not found", unicode(library_key))
+        raise Http404
+
+    try:
+        usage_key = UsageKey.from_string(usage_key_string)
+    except InvalidKeyError:  # Raise Http404 on invalid 'usage_key_string'
+        raise Http404
+    with modulestore().bulk_operations(usage_key.course_key):
+        try:
+            xblock = modulestore().get_item(usage_key, depth=1)
+        except ItemNotFoundError:
+            return HttpResponseBadRequest()
+
+        # component_templates = get_component_templates(course)
+        component_templates = get_component_templates(library, library=True)
+        action = request.GET.get('action', 'view')
+
+        # Fetch the XBlock info for use by the container page.
+        xblock_info = create_xblock_info(xblock, include_ancestor_info=False)
+
+        return render_to_response('container.html', {
+            'language_code': request.LANGUAGE_CODE,
+            'context_library': library,
+            'action': action,
+            'xblock': xblock,
+            'xblock_locator': xblock.location,
+            'is_unit_page': False,
+            'ancestor_xblocks': [],
+            'component_templates': component_templates,
+            'xblock_info': xblock_info,
+            'outline_url': '',
+            'templates': CONTAINER_TEMPLATES
+        })

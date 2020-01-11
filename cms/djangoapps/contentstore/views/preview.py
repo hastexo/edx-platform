@@ -290,6 +290,7 @@ def _studio_wrap_xblock(xblock, view, frag, context, display_name_only=False):
         template_context = {
             'xblock_context': context,
             'xblock': xblock,
+            'root_xblock': root_xblock,
             'show_preview': context.get('show_preview', True),
             'content': frag.content,
             'is_root': is_root,

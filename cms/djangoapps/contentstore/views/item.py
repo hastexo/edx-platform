@@ -378,6 +378,12 @@ def xblock_view_handler(request, usage_key_string, view_name):
 
             force_render = request.GET.get('force_render', None)
 
+            root_xblock = None
+            if view_name == 'container_child_preview':
+                root_xblock = get_parent_xblock(xblock)
+            elif view_name == 'container_preview':
+                root_xblock = xblock
+
             # Set up the context to be passed to each XBlock's render method.
             context = request.GET.dict()
             context.update({
@@ -385,7 +391,7 @@ def xblock_view_handler(request, usage_key_string, view_name):
                 'is_pages_view': is_pages_view or view_name == AUTHOR_VIEW,
                 'is_unit_page': is_unit(xblock),
                 'can_edit': can_edit,
-                'root_xblock': xblock if (view_name == 'container_preview') else None,
+                'root_xblock': root_xblock,
                 'reorderable_items': reorderable_items,
                 'paging': paging,
                 'force_render': force_render,
@@ -679,12 +685,6 @@ def _create_item(request):
         raise PermissionDenied()
 
     category = request.json['category']
-    if isinstance(usage_key, LibraryUsageLocator):
-        # Only these categories are supported at this time.
-        if category not in ['html', 'problem', 'video']:
-            return HttpResponseBadRequest(
-                u"Category '%s' not supported for Libraries" % category, content_type='text/plain'
-            )
 
     created_block = create_xblock(
         parent_locator=parent_locator,

@@ -56,7 +56,7 @@ var visibleToStaffOnly = visibilityState === 'staff_only';
         </p>
     </div>
 
-    <% if (!course.get('self_paced')) { %>
+    <% if (course && !course.get('self_paced')) { %>
         <div class="wrapper-release bar-mod-content">
             <h5 class="title"><%- releaseLabel %></h5>
             <p class="copy">

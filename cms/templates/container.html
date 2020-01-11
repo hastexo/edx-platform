@@ -199,6 +199,7 @@ from openedx.core.djangolib.markup import HTML, Text
                 % endif
             </aside>
         </section>
+        % if context_course:
         <div id="edit-image-modal">
         <%static:studiofrontend entry="editImageModal">
             {
@@ -218,6 +219,7 @@ from openedx.core.djangolib.markup import HTML, Text
             }
         </%static:studiofrontend>
         </div>
+        % endif
     </div>
 </div>
 </%block>

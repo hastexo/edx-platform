@@ -542,6 +542,7 @@ BROKER_URL = "{0}://{1}:{2}@{3}/{4}".format(CELERY_BROKER_TRANSPORT,
                                             CELERY_BROKER_HOSTNAME,
                                             CELERY_BROKER_VHOST)
 BROKER_USE_SSL = ENV_TOKENS.get('CELERY_BROKER_USE_SSL', False)
+BROKER_TRANSPORT_OPTIONS = ENV_TOKENS.get('CELERY_BROKER_TRANSPORT_OPTIONS', {})
 
 # Block Structures
 

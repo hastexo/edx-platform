@@ -323,6 +323,10 @@ LANGUAGE_DICT = dict(LANGUAGES)
 for app in ENV_TOKENS.get('ADDL_INSTALLED_APPS', []):
     INSTALLED_APPS.append(app)
 
+# Webhooks
+WEBHOOK_SETTINGS = ENV_TOKENS.get('WEBHOOK_SETTINGS', {})
+for app in ENV_TOKENS.get('WEBHOOK_APPS', []):
+    WEBHOOK_APPS += (app,)
 
 local_loglevel = ENV_TOKENS.get('LOCAL_LOGLEVEL', 'INFO')
 LOG_DIR = ENV_TOKENS['LOG_DIR']

@@ -174,6 +174,13 @@ urlpatterns = [
                                     namespace='api_discounts')),
 ]
 
+# Include each webhook app's URLs, if enabled.
+if settings.FEATURES.get("ENABLE_WEBHOOKS"):
+    for app in settings.WEBHOOK_APPS:
+        urlpatterns += (
+            url(r'^webhooks/', include("%s.urls" % app, namespace=app)),
+        )
+
 if settings.FEATURES.get('ENABLE_MOBILE_REST_API'):
     urlpatterns += [
         url(r'^api/mobile/(?P<api_version>v(1|0.5))/', include('mobile_api.urls')),

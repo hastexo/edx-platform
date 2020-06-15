@@ -247,7 +247,7 @@ class Courses(SysadminDashboardView):
         """This pulls out some git info like the last commit"""
 
         cmd = ''
-        gdir = settings.DATA_DIR / cdir
+        gdir = path(settings.DATA_DIR) / cdir
         info = ['', '', '']
 
         # Try the data dir, then try to find it in the git import dir

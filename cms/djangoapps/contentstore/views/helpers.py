@@ -115,6 +115,10 @@ def xblock_studio_url(xblock, parent_xblock=None):
     elif category == 'library':
         library_key = xblock.location.course_key
         return reverse_library_url('library_handler', library_key)
+    elif parent_xblock and parent_xblock.category == 'library':
+        library_key = parent_xblock.location.course_key
+        return reverse_library_url('library_container_handler', library_key,
+                {'usage_key_string': xblock.location})
     else:
         return reverse_usage_url('container_handler', xblock.location)
 

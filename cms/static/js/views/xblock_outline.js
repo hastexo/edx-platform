@@ -109,7 +109,7 @@ define(['jquery', 'underscore', 'gettext', 'js/views/baseview', 'common/js/compo
                     includesChildren: this.shouldRenderChildren(),
                     hasExplicitStaffLock: this.model.get('has_explicit_staff_lock'),
                     staffOnlyMessage: this.model.get('staff_only_message'),
-                    course: course
+                    course: typeof course !== 'undefined' ? course : null
                 };
             },
 

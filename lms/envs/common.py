@@ -478,6 +478,9 @@ FEATURES = {
     # .. toggle_status: supported
     # .. toggle_warnings: None
     'ENABLE_ORA_USER_STATE_UPLOAD_DATA': False,
+
+    # Enable loading of external app URLs under the "webhooks" namespace.
+    'ENABLE_WEBHOOKS': False,
 }
 
 # Settings for the course reviews tool template and identification key, set either to None to disable course reviews
@@ -3916,3 +3919,7 @@ GITHUB_REPO_ROOT = '/edx/var/edxapp/data'
 
 ##################### SUPPORT URL ############################
 SUPPORT_HOW_TO_UNENROLL_LINK = ''
+
+############## Settings for Webhooks ######################
+
+WEBHOOK_APPS = ()

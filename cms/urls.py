@@ -201,6 +201,8 @@ if settings.FEATURES.get('ENABLE_CONTENT_LIBRARIES'):
             contentstore.views.library_handler, name='library_handler'),
         url(r'^library/{}/team/$'.format(LIBRARY_KEY_PATTERN),
             contentstore.views.manage_library_users, name='manage_library_users'),
+        url(r'^library/{}/container/{}$'.format(LIBRARY_KEY_PATTERN, settings.USAGE_KEY_PATTERN),
+            contentstore.views.library_container_handler, name='library_container_handler'),
     ]
 
 if settings.FEATURES.get('ENABLE_EXPORT_GIT'):

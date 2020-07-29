@@ -283,6 +283,7 @@ def _studio_wrap_xblock(xblock, view, frag, context, display_name_only=False):
         root_xblock = context.get('root_xblock')
         is_root = root_xblock and xblock.location == root_xblock.location
         is_reorderable = _is_xblock_reorderable(xblock, context)
+        is_library = hasattr(xblock.location, 'library_key')
         selected_groups_label = get_visibility_partition_info(xblock)['selected_groups_label']
         if selected_groups_label:
             selected_groups_label = _(u'Access restricted to: {list_of_groups}').format(list_of_groups=selected_groups_label)
@@ -296,10 +297,12 @@ def _studio_wrap_xblock(xblock, view, frag, context, display_name_only=False):
             'is_root': is_root,
             'is_reorderable': is_reorderable,
             'can_edit': context.get('can_edit', True),
-            'can_edit_visibility': context.get('can_edit_visibility', True),
+            # visibility settings are not configurable from library views
+            'can_edit_visibility': context.get('can_edit_visibility', not is_library),
             'selected_groups_label': selected_groups_label,
             'can_add': context.get('can_add', True),
-            'can_move': context.get('can_move', True),
+            # move content within a course, not applicable in library views
+            'can_move': context.get('can_move', not is_library),
             'language': getattr(course, 'language', None)
         }
 

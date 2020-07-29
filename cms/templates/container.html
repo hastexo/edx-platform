@@ -144,7 +144,9 @@ from openedx.core.djangolib.markup import HTML, Text
                 % endif
             </ul>
         </nav>
+    % if is_unit_page:
     <div id="sequence-nav"></div>
+    % endif
     </header>
 </div>
 

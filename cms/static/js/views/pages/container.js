@@ -41,7 +41,7 @@ define(['jquery', 'underscore', 'backbone', 'gettext', 'js/views/pages/base_page
             initialize: function(options) {
                 BasePage.prototype.initialize.call(this, options);
                 this.viewClass = options.viewClass || this.defaultViewClass;
-                this.isLibraryPage = (this.model.attributes.category === 'library');
+                this.isLibraryPage = (this.model.id.includes('lib-block'));
                 this.nameEditor = new XBlockStringFieldEditor({
                     el: this.$('.wrapper-xblock-field'),
                     model: this.model
